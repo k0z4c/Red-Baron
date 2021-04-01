@@ -36,6 +36,7 @@ resource "digitalocean_droplet" "phishing-server" {
     ]
 
     connection {
+        host = self.ipv4_address
         type = "ssh"
         user = "root"
         private_key = tls_private_key.ssh.*.private_key_pem[count.index]
@@ -43,12 +44,12 @@ resource "digitalocean_droplet" "phishing-server" {
   }
 
   provisioner "local-exec" {
-    command = "echo \"${tls_private_key.ssh.*.private_key_pem[count.index]}\" > ./ssh_keys/${self.ipv4_address} && echo \"${tls_private_key.ssh.*.public_key_openssh[count.index]}\" > ./ssh_keys/${self.ipv4_address}.pub && chmod 600 ./data/ssh_keys/*" 
+    command = "echo \"${tls_private_key.ssh.*.private_key_pem[count.index]}\" > ./data/ssh_keys/${self.ipv4_address} && echo \"${tls_private_key.ssh.*.public_key_openssh[count.index]}\" > ./data/ssh_keys/${self.ipv4_address}.pub && chmod 600 ./data/ssh_keys/*" 
   }
 
   provisioner "local-exec" {
     when = destroy
-    command = "rm ./ssh_keys/${self.ipv4_address}*"
+    command = "rm ./data/ssh_keys/${self.ipv4_address}*"
   }
 
 }
@@ -88,7 +89,7 @@ data "template_file" "ssh_config" {
     name = "phishing_server_${digitalocean_droplet.phishing-server.*.ipv4_address[count.index]}"
     hostname = digitalocean_droplet.phishing-server.*.ipv4_address[count.index]
     user = "root"
-    identityfile = path.root}/data/ssh_keys/${digitalocean_droplet.phishing-server.*.ipv4_address[count.index]
+    identityfile = "${path.root}/data/ssh_keys/${digitalocean_droplet.phishing-server.*.ipv4_address[count.index]}"
   }
 
 }
