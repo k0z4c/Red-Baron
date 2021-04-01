@@ -31,6 +31,7 @@ resource "digitalocean_droplet" "http-c2" {
     scripts = concat(list("./data/scripts/core_deps.sh"), var.install)
 
     connection {
+        host = self.ipv4_address
         type = "ssh"
         user = "root"
         private_key = tls_private_key.ssh.*.private_key_pem[count.index]
@@ -82,7 +83,7 @@ data "template_file" "ssh_config" {
     name = "http_c2_${digitalocean_droplet.http-c2.*.ipv4_address[count.index]}"
     hostname = digitalocean_droplet.http-c2.*.ipv4_address[count.index]
     user = "root"
-    identityfile = path.root}/data/ssh_keys/${digitalocean_droplet.http-c2.*.ipv4_address[count.index]
+    identityfile = "${path.root}/data/ssh_keys/${digitalocean_droplet.http-c2.*.ipv4_address[count.index]}"
   }
 
 }
