@@ -25,7 +25,7 @@ variable "ansible_vars" {
 }
 
 variable "size" {
-  default = "1gb"
+  default = "s-1vcpu-1gb"
 }
 
 variable "regions" {

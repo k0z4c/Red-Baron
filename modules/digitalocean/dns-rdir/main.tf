@@ -35,6 +35,7 @@ resource "digitalocean_droplet" "dns-rdir" {
     ]
 
     connection {
+        host = self.ipv4_address
         type = "ssh"
         user = "root"
         private_key = tls_private_key.ssh.*.private_key_pem[count.index]
@@ -87,7 +88,7 @@ data "template_file" "ssh_config" {
     name = "dns_rdir_${digitalocean_droplet.dns-rdir.*.ipv4_address[count.index]}"
     hostname = digitalocean_droplet.dns-rdir.*.ipv4_address[count.index]
     user = "root"
-    identityfile = path.root}/data/ssh_keys/${digitalocean_droplet.dns-rdir.*.ipv4_address[count.index]
+    identityfile = "${path.root}/data/ssh_keys/${digitalocean_droplet.dns-rdir.*.ipv4_address[count.index]}"
   }
 
 }

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-echo {\"ip\":\""`curl -qs http://ifconfig.me`"\"}
+echo {\"ip\":\""`curl -qs http://ipinfo.io/ip`"\"}
